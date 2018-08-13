@@ -17,6 +17,7 @@ var bodyParser  = require('body-parser');
 var config = require('./config'); 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+var request = require('request');
 
 
 mongoose.connect(config.database , { useNewUrlParser: true }); 
@@ -38,40 +39,44 @@ app.post("/logar", function (req, res, next){
   console.log("Valor do login - "+ req.body.login);
   console.log("Latitude - "+ req.body.latitude+ "\nlongitude = "+ req.body.longitude);
 
-  User.findOne({
-	      login: req.body.login},
-	      function(err, user){
-	        if (err) throw err;
-	        if(!user){
-	        	console.log("Não achou o usuario");
-	          res.json({ success: false, message: 'Usuário não encontrado.'});
+  //request.get('http://localhost:8080/users/verificar/'+req.body.login, { json: true })
+  request({
+    method: "GET",
+    url: 'http://localhost:8080/users/verificar/'+ req.body.login,
+    headers:{
+      senha: req.body.senha
+    }
 
-	        }else if(user){
-	         	console.log("usuario - "+ user.login);
-	          if(user.senha != req.body.senha){
+  })
+  .on('data', function(chunk) {
+    var data = JSON.parse(chunk);
+    //console.log(response.statusCode);
+    console.log("resposta do request - "+ data.message);
+    if(data.success){
+      console.log("gerar token");
+        const payload = {
+                email: data.message
+              };
 
-	            res.json({ success: false, message: 'Senha errada.' });
+               // console.log("Segredo - "+ process.env.SECRET);
+                var token = jwt.sign(payload, config.secret, {
+                    expiresIn: 300 // expires in 24 hours
+                 });
 
-	          }else{
-
-	             const payload = {
-	              email: user.email
-	          	};
-
-	             // console.log("Segredo - "+ process.env.SECRET);
-	              var token = jwt.sign(payload, config.secret, {
-	                  expiresIn: 300 // expires in 24 hours
-	               });
-
-	              res.json({
-	                success: true,
-	                message: 'Logado com sucesso',
-	                token: token
-	              });
-	          }
-	        }
-	      }
-	    );
+                res.json({
+                  success: true,
+                  message: 'Logado com sucesso',
+                  token: token
+                });
+    }else{
+            res.json(data);
+    }
+    
+  }).on("error", function(err){
+    console.log("Erro no request");
+    console.log(err);
+  })
+  
 
 	});
 //autenticar o usuario
@@ -80,13 +85,14 @@ var autenticar = function autenticar(req, res, next){
     var token = req.body.token || req.headers['x-access-token'];
     console.log("token - "+ token);
     if(token){
-      jwt.verify(token, config.secret, function(err, decoded){
+      jwt.verify(token, config.secret, function(err,decoded ){
         if(err){
           console.log(err);
           return res.json({ success: false, message: 'Erro ao autenticar' })
         }else{
-          console.log("Decoded - "+ decoded);
-          req.decode = decoded;
+          
+          req.decoded = decoded;
+          console.log("Decoded - "+ req.decoded);
           next();
         }
       });

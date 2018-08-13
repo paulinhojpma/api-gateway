@@ -1,26 +1,37 @@
 $(document).ready(function(){
 
 			console.log("jquery pronto");
-			//localStorage.setItem('token',null);
-   			console.log("token - " + localStorage.getItem("token"));
+			
    			
-   			if(localStorage.getItem("token") != undefined && localStorage.getItem("token") != null){
+        var token = window.sessionStorage.getItem("token");
+   			console.log("token - " + token);
+   			
 
-   					alert("Token já setado");
+        if(token){
+
+   					console.log("Token já setado");
    					$.ajax({
-   						url: window.location.href+ 'autenticar',
+   						url: window.location.href+ 'users',
    						headers: {
-   							'x-access-token': localStorage.getItem("token"),
+   							'x-access-token': token,
    							'index': 'index'},
    						success : function(data, status){
-   							alert("Seu login expirou");
-   							localStorage.setItem('token', null);
+   							console.log("Status - "+ status);
+                if(!data.success){
+                  window.sessionStorage.setItem("token", null);
+                  console.log("Seu login expirou");
+                }
+   							
+                 console.log(data.message);
+                 console.log("token - " + window.sessionStorage.getItem("token"));
+                
    						}
    					});
 
-   			}else{
+   			}
    				var lat = "";
    				var long = "";
+
    				function getLocation() {
    						console.log("Entrou no getLocation");
 					    if (navigator.geolocation) {
@@ -36,12 +47,12 @@ $(document).ready(function(){
 					    console.log("Latitude  - "+ lat+"\nLongitude - "+ long);
 					}
    				getLocation();
-
+          console.log("token - " + window.sessionStorage.getItem("token"));
                $("#submit").click(function(){
                console.log("Entrou no logar: ");
                var path =  window.location.href+'logar';
                console.log("url - "+ path);
-               //alert("Login - "+ $("#login").val()+" Senha - "+ $("#senha").val());
+               console.log("Login - "+ $("#login").val()+" Senha - "+ $("#senha").val());
                 $.ajax({
                    url : path,
                    type : 'POST',
@@ -56,8 +67,27 @@ $(document).ready(function(){
                        console.log(data.success);
                         if(data.success){
                            
-                           localStorage.setItem('token',data.token);
-                           console.log("token - " + localStorage.getItem("token"));
+                           window.sessionStorage.setItem('token',data.token);
+                           console.log("token - " + window.sessionStorage.getItem("token"));
+                          /* token = window.sessionStorage.getItem("token");
+
+                           $.ajax({
+                              url: window.location.href+ 'users',
+                              headers: {
+                                'x-access-token': token,
+                                'index': 'index'},
+                              success : function(data, status){
+                                console.log("Status - "+ status);
+                                if(!data.success){
+                                  window.sessionStorage.setItem("token", null);
+                                  console.log("Seu login expirou");
+                                }
+                                
+                                 console.log(data.message);
+                                 console.log("token - " + window.sessionStorage.getItem("token"));
+                                
+                              }
+                            });*/
 
                         }else{
                            alert(data.message);
@@ -66,7 +96,7 @@ $(document).ready(function(){
 
                    error : function(resultat, statut, erreur){
                     
-                     localStorage.setItem('resultado', erreur +" - "+ statut + " - "+ resultat.readyState); // assuming you send a json token
+                     window.sessionStorage.setItem('resultado', erreur +" - "+ statut + " - "+ resultat.readyState); // assuming you send a json token
                    }
                 });
 
@@ -96,7 +126,7 @@ $(document).ready(function(){
 
    				});*/
 
-   			}
+   			
    			
    			
    			
