@@ -11,12 +11,13 @@ $(document).ready(function(){
 
    					console.log("Token já setado");
    					$.ajax({
-   						url: window.location.href+ 'users',
+   						url: window.location.href+ 'users/usersView',
    						headers: {
    							'x-access-token': token,
    							'index': 'index'},
    						success : function(data, status){
    							console.log("Status - "+ status);
+                        console.log("Sucess - "+ data.success);
                 if(!data.success){
                   window.sessionStorage.setItem("token", null);
                   console.log("Seu login expirou");
@@ -59,6 +60,7 @@ $(document).ready(function(){
                    data : {login: $('#login').val(), senha: $('#senha').val(), latitude: lat, longitude: long },
                    dataType : 'JSON',
 
+
                    success : function(data, statut){
                         // assuming you send a json token
                        //alert("foi carai");
@@ -69,10 +71,10 @@ $(document).ready(function(){
                            
                            window.sessionStorage.setItem('token',data.token);
                            console.log("token - " + window.sessionStorage.getItem("token"));
-                          /* token = window.sessionStorage.getItem("token");
-
+                          token = window.sessionStorage.getItem("token");
+                           $("#form").hide();
                            $.ajax({
-                              url: window.location.href+ 'users',
+                              url: window.location.href+ 'users/usersView',
                               headers: {
                                 'x-access-token': token,
                                 'index': 'index'},
@@ -87,7 +89,7 @@ $(document).ready(function(){
                                  console.log("token - " + window.sessionStorage.getItem("token"));
                                 
                               }
-                            });*/
+                            });
 
                         }else{
                            alert(data.message);

@@ -54,6 +54,7 @@ app.post("/logar", function (req, res, next){
     console.log("resposta do request - "+ data.message);
     if(data.success){
       console.log("gerar token");
+
         const payload = {
                 email: data.message
               };
@@ -85,14 +86,16 @@ var autenticar = function autenticar(req, res, next){
     var token = req.body.token || req.headers['x-access-token'];
     console.log("token - "+ token);
     if(token){
-      jwt.verify(token, config.secret, function(err,decoded ){
+      jwt.verify(token, config.secret, function(err, decoded){
         if(err){
           console.log(err);
           return res.json({ success: false, message: 'Erro ao autenticar' })
         }else{
           
-          req.decoded = decoded;
-          console.log("Decoded - "+ req.decoded);
+          req.headers['x-access-token']= decoded.email;
+          console.log("Decoded - "+ req.headers['x-access-token']);
+          console.log(req.url);
+		  console.log(req.originalUrl);
           next();
         }
       });
@@ -107,9 +110,17 @@ var autenticar = function autenticar(req, res, next){
 }
 // Proxy request
 app.get('/users', autenticar, (req, res, next) => {
+	 //console.log("Decoded antes de ir para crud us- "+ req.decoded);
+	 console.log(req.url);
+	 console.log(req.originalUrl);
   userServiceProxy(req, res, next);
 });
-
+app.get('/users/usersView', autenticar, (req, res, next) => {
+	 //console.log("Decoded antes de ir para crud us- "+ req.decoded);
+	 console.log(req.url);
+	 console.log(req.originalUrl);
+  userServiceProxy(req, res, next);
+});
 /*app.get('/products', (req, res, next) => {
   productsServiceProxy(req, res, next);
 })*/
