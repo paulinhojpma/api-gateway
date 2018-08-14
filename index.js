@@ -49,8 +49,9 @@ app.post("/logar", function (req, res, next){
 
   })
   .on('data', function(chunk) {
+    console.log("Chunk - " + chunk);
     var data = JSON.parse(chunk);
-    //console.log(response.statusCode);
+   //console.log(response.statusCode);
     console.log("resposta do request - "+ data.message);
     if(data.success){
       console.log("gerar token");
@@ -85,7 +86,12 @@ var autenticar = function autenticar(req, res, next){
    console.log("Entrou no autenticar");
     var token = req.body.token || req.headers['x-access-token'];
     console.log("token - "+ token);
-    if(token){
+    console.log("path - "+ req.originalUrl);
+   
+    if(/(public)/.test(req.originalUrl)){
+      next();
+    }else{
+      if(token){
       jwt.verify(token, config.secret, function(err, decoded){
         if(err){
           console.log(err);
@@ -94,28 +100,28 @@ var autenticar = function autenticar(req, res, next){
           
           req.headers['x-access-token']= decoded.email;
           console.log("Decoded - "+ req.headers['x-access-token']);
-          console.log(req.url);
-		  console.log(req.originalUrl);
+        
           next();
         }
       });
-    }else{
-      return res.status(403).send({ 
-        success: false, 
-        message: 'Nenhum token dado' 
-      });
-      //res.render('index');
+      }else{
+        return res.status(403).send({ 
+          success: false, 
+          message: 'Nenhum token dado' 
+        });
+        //res.render('index');
+      }
     }
+    
     
 }
 // Proxy request
-app.get('/users', autenticar, (req, res, next) => {
-	 //console.log("Decoded antes de ir para crud us- "+ req.decoded);
-	 console.log(req.url);
-	 console.log(req.originalUrl);
+/*app.get('/users', autenticar, (req, res, next) => {
+	 console.log("Decoded antes de ir para crud us- "+ req.decoded);
+	
   userServiceProxy(req, res, next);
-});
-app.get('/users/usersView', autenticar, (req, res, next) => {
+});*/
+app.get('(/users|/users/*)', autenticar, (req, res, next) => {
 	 //console.log("Decoded antes de ir para crud us- "+ req.decoded);
 	 console.log(req.url);
 	 console.log(req.originalUrl);

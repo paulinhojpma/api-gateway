@@ -1,9 +1,11 @@
-$(document).ready(function(){
 
-			console.log("jquery pronto");
+ 
+var token = window.sessionStorage.getItem("token");
+$(document).ready(function(){
+      console.log("------------Carregando main.js -----------");
 			
    			
-        var token = window.sessionStorage.getItem("token");
+       
    			console.log("token - " + token);
    			
 
@@ -80,17 +82,18 @@ $(document).ready(function(){
                                 'index': 'index'},
                               success : function(data, status){
                                 console.log("Status - "+ status);
-                                 alert(data);
-                                    window.location.pathname = "usuarios.html";
-                                if(!data.success){
+                                 console.log(data);
+                                   // window.location.pathname = "usuarios.html";
+                                  $("#lista").html(data);
+                             /*   if(!data.success){
                                   window.sessionStorage.setItem("token", null);
                                   console.log("Seu login expirou");
                                 }else{
-                                    alert(data);
+                                    
                                     window.location.pathname = "usuarios.html";
-                                }
+                                }*/
                                 
-                                 console.log(data.message);
+                                 //console.log(data.message);
                                  console.log("token - " + window.sessionStorage.getItem("token"));
                                 
                               }
