@@ -80,9 +80,14 @@ $(document).ready(function(){
                                 'index': 'index'},
                               success : function(data, status){
                                 console.log("Status - "+ status);
+                                 alert(data);
+                                    window.location.pathname = "usuarios.html";
                                 if(!data.success){
                                   window.sessionStorage.setItem("token", null);
                                   console.log("Seu login expirou");
+                                }else{
+                                    alert(data);
+                                    window.location.pathname = "usuarios.html";
                                 }
                                 
                                  console.log(data.message);
