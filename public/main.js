@@ -49,8 +49,10 @@ $(document).ready(function(){
 					     long =  position.coords.longitude;
 					    console.log("Latitude  - "+ lat+"\nLongitude - "+ long);
 					}
-   				getLocation();
-          console.log("token - " + window.sessionStorage.getItem("token"));
+   				
+               getLocation();
+               console.log("token - " + window.sessionStorage.getItem("token"));
+               
                $("#submit").click(function(){
                console.log("Entrou no logar: ");
                var path =  window.location.href+'logar';
