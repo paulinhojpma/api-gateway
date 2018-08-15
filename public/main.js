@@ -76,7 +76,7 @@ $(document).ready(function(){
                            window.sessionStorage.setItem('token',data.token);
                            console.log("token - " + window.sessionStorage.getItem("token"));
                           token = window.sessionStorage.getItem("token");
-                           $("#form").hide();
+                           $("#form").slideUp("slow");
                            $.ajax({
                               url: window.location.href+ 'users/usersView',
                               headers: {
