@@ -115,21 +115,14 @@ var autenticar = function autenticar(req, res, next){
     
     
 }
-// Proxy request
-/*app.get('/users', autenticar, (req, res, next) => {
-	 console.log("Decoded antes de ir para crud us- "+ req.decoded);
-	
-  userServiceProxy(req, res, next);
-});*/
+//proxy request
 app.get('(/users|/users/*)', autenticar, (req, res, next) => {
 	 //console.log("Decoded antes de ir para crud us- "+ req.decoded);
 	 console.log(req.url);
 	 console.log(req.originalUrl);
   userServiceProxy(req, res, next);
 });
-/*app.get('/products', (req, res, next) => {
-  productsServiceProxy(req, res, next);
-})*/
+
 app.engine('html', require('ejs').renderFile);
 //app.set('views', path.join(__dirname, 'views'));
 app.set('views', path.join(__dirname, 'view'));
