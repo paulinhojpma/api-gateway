@@ -118,8 +118,15 @@ var autenticar = function autenticar(req, res, next){
 //proxy request
 app.get('(/users|/users/*)', autenticar, (req, res, next) => {
 	 //console.log("Decoded antes de ir para crud us- "+ req.decoded);
-	 console.log(req.url);
+	 
 	 console.log(req.originalUrl);
+  userServiceProxy(req, res, next);
+});
+
+app.post('(/users|/users/*)', bodyParser.text({ type: 'urlencoded' }), autenticar, (req, res, next) => {
+	 //console.log("Decoded antes de ir para crud us- "+ req.decoded);
+	 //console.log("Nome retornado - "+ req.body.nome);
+	 //console.log(req.originalUrl);
   userServiceProxy(req, res, next);
 });
 
