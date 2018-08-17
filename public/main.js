@@ -1,14 +1,28 @@
 
- 
+  function carregarMensagens(msg){
+
+          $("#msg").slideDown("slow").text(msg);
+        }
 var token = window.sessionStorage.getItem("token");
 $(document).ready(function(){
       console.log("------------Carregando main.js -----------");
 			
-   			
+   			escondeMensagens();
        
    			console.log("token - " + token);
-   			
+   			 $("#msg").slideUp();
+        function escondeMensagens(){
+              $("#msg").click(function(){
+               console.log("Entrou no evento esconde msg");
+              $("#msg").slideUp("slow").text("");
+            });
 
+        }
+
+        
+
+
+       
         if(token){
 
    					console.log("Token já setado");
@@ -23,10 +37,12 @@ $(document).ready(function(){
                 if(!data.success){
                   window.sessionStorage.setItem("token", null);
                   console.log("Seu login expirou");
+                 carregarMensagens(data.message);
                 }
    							
                  console.log(data.message);
                  console.log("token - " + window.sessionStorage.getItem("token"));
+                 carregarMensagens(data.message);
                 
    						}
    					});
@@ -76,6 +92,7 @@ $(document).ready(function(){
                            window.sessionStorage.setItem('token',data.token);
                            console.log("token - " + window.sessionStorage.getItem("token"));
                           token = window.sessionStorage.getItem("token");
+                          carregarMensagens(data.message);
                            $("#form").slideUp("slow");
                            $.ajax({
                               url: window.location.href+ 'users/usersView',
@@ -102,7 +119,7 @@ $(document).ready(function(){
                             });
 
                         }else{
-                           alert(data.message);
+                           carregarMensagens(data.message);
                         }
                    },
 
@@ -112,40 +129,10 @@ $(document).ready(function(){
                    }
                 });
 
-            });
-
-
-              
-
-   				/*$("form").submit(function(){
-
-
-
-   					alert("Entrou no submit");
-   					
-
-
-					
-   					$("<input>").attr({
-   						type: "hidden",
-   						value: lat,
-   						id: "latidude",
-   						name: "latitude"
-   					}).appendTo("form");
-   					$("<input>").attr({
-   						type: "hidden",
-   						value: long,
-   						id: "longitude",
-   						name: "longitude"
-   					}).appendTo("form");
-
-   				});*/
-
-   			
-   			
-   			
+            });	 			
    			
 
 
 
 }); 
+
